@@ -20,48 +20,59 @@ namespace Calculator
 
         }
         List<double> numsarr = new List<double>();
-        List<string> chararr = new List<string>(); // like a "plus,minus,multi,divide"
+        List<string> chararr = new List<string>(); 
         
         private bool haverror = false;
 
          public void numsbuttonclick(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
-            if (mainlabel.Text.EndsWith("%"))
+
+            if (mainlabel.Text.EndsWith("%") | mainlabel.Text.EndsWith("²") )
             {
                 return ;
             }
-            mainlabel.Text += btn.Text;
-            try
+            if  (btn.Text == "π")
             {
-                Getthecurrentexample();
-                if (numsarr.Count > 1)
+                if (mainlabel.Text == string.Empty | mainlabel.Text == "")
                 {
-
+                    mainlabel.Text += btn.Text;
+                    Getthecurrentexample();
                     _Equals();
+                    return;
                 }
-                else
-                {
-                    if (mainlabel.Text.StartsWith("√") & numsarr.Count == 1)
-                    {
-                        _Equals();
-                    }
-                }
+
+                char temp  = mainlabel.Text[mainlabel.Text.Length - 1];
+                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' | mainlabel.Text.EndsWith("π")) 
+                { return ; }
             }
-            catch { }
-            
+            mainlabel.Text += btn.Text;
+            Getthecurrentexample();
+            _Equals();
             }
-        public void charbuttonclick(object sender, EventArgs e)
+        public void charbuttonclick(object sender, EventArgs e)  //  доделать чтобы знак ⅟ₓ можно было использовать после корня
         {
             Button btn = (Button)sender;
+
+            if  (btn.Text == "⅟ₓ")  // единицу от числа ⁻¹  
+            {
+                if (mainlabel.Text.EndsWith("+") | mainlabel.Text.EndsWith("-") | mainlabel.Text.EndsWith("÷")
+                  | mainlabel.Text.EndsWith("×") | mainlabel.Text == string.Empty | mainlabel.Text == "" | mainlabel.Text == " ")
+                {
+                    mainlabel.Text += "⅟";  //  ⅟
+                    return;
+                }
+                else return;
+            }    
 
             if (btn.Text == "X²")// квадрат
             {
                 char  temp = mainlabel.Text[mainlabel.Text.Length - 1];
-                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9')
+                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' | mainlabel.Text.EndsWith("π"))
                 {
                     mainlabel.Text += "²";
                     Getthecurrentexample();
+                    _Equals();
                     return;
                 }
                 else return;
@@ -89,16 +100,8 @@ namespace Calculator
                 else
                 {
                     mainlabel.Text += btn.Text;
-                    
-                Getthecurrentexample();
-                if (numsarr.Count == 1)
-                {
-                    int f = 0;
-                    percentages(ref f,false);
+                    Getthecurrentexample();
                     _Equals();
-                        return;
-                }
-                _Equals();
                     return;
                 }
             }
@@ -240,7 +243,7 @@ namespace Calculator
             haverror = false;
 
             string inputString = mainlabel.Text;
-            char[] delimiterChars = {' ', '÷', '+', '-', '×', '%', '\t', '√', '²'}; // ÷ + - × % √ ²
+            char[] delimiterChars = {' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '⅟' }; // ÷ + - × % √ ² ⅟
             string[] nums = inputString.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < nums.Length; i++)
             {
@@ -257,6 +260,10 @@ namespace Calculator
 
                         inputString = inputString.Replace(inputString[inputString.IndexOf('E')+1], '#');
                         inputString = inputString.Replace(inputString[inputString.IndexOf('E')], '#');
+                    }
+                    else if (nums[i]  == "π")
+                    {
+                        numsarr.Add(Convert.ToDouble(Math.PI));
                     }
                     else {
                         double temp = double.Parse(nums[i]);
@@ -287,7 +294,7 @@ namespace Calculator
                 array = newarray;
             }
 
-            char[] delimetrnums = { ',', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ,' ' ,'E','Е','e','е', '#' };
+            char[] delimetrnums = { ',', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ,' ' ,'E','Е','e','е', '#', 'π' };
             string[] chars = inputString.Split(delimetrnums, System.StringSplitOptions.RemoveEmptyEntries);
             if (mainlabel.Text.StartsWith("-", true, null)) // первое число минусовое
             {
@@ -340,11 +347,20 @@ namespace Calculator
                 }
                 else if (chararr[i] == "%")
                 {
-                    if (i!=0 & chararr[i - 1] == "+" | chararr[i - 1] == "-")
+                    if (i!=0 )
                     {
-                        numsarr[i] = numsarr[i] / 100 * numsarr[i-1];
-                        chararr.RemoveAt(i);
-                        i--;
+                        if (chararr[i - 1] == "+" | chararr[i - 1] == "-")
+                        {
+                            numsarr[i] = numsarr[i] / 100 * numsarr[i - 1];
+                            chararr.RemoveAt(i);
+                            i--;
+                        }
+                        else
+                        {
+                            numsarr[i] = numsarr[i] / 100;
+                            chararr.RemoveAt(i);
+                            i--;
+                        }
                     }
                     else
                     {
@@ -359,123 +375,17 @@ namespace Calculator
                     chararr.RemoveAt(i);
                     i--;
                 }
+                else if (chararr[i] == "⅟")
+                {
+                        numsarr[i] = Math.Pow(numsarr[i],-1);
+                        chararr.RemoveAt(i);
+                        i--;
+                }
             }
 
         }
-        private void square()
-        {
-            try// like a  ÷ × + -  % √ ² 
-            {
-                int temp = 0;
-                for (int i = 0; i < chararr.Count; i++)
-                {
-                    if (chararr[i] == "%") { temp++; }
-                    if (chararr[i] == "√") { temp++; }
-                    if (chararr[i] == "²")
-                    {
+        
 
-                            numsarr[i - temp] = Math.Pow(numsarr[i - temp],2);
-                            chararr.RemoveAt(i);
-                            i--;
-
-
-                    }
-                }
-            }
-            catch (Exception ex) { warn(ex); }
-        }
-       private void rootof()
-        {
-            try// like a  ÷ × + -  % √ ² 
-            {
-                int temp = 0;
-                for (int i = 0; i < chararr.Count; i++)
-                {
-                    if (chararr[i] == "%") { temp++; }
-                    if (chararr[i] == "√")
-                    {
-                        if (numsarr[i - temp] > 0)
-                        {
-                            numsarr[i - temp] = Math.Sqrt(numsarr[i - temp]);
-                            chararr.RemoveAt(i);
-                            i--;
-                        }
-                        else if (numsarr[i - temp] < 0)
-                        {
-                            numsarr[i - temp] = Math.Sqrt(numsarr[i - temp] * -1) * -1;
-                            chararr.RemoveAt(i);
-                            i--;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex) { warn(ex); }
-        }
-
-        private void percentages()
-        {
-
-        }
-        private void percentages(ref int nowchar,bool IsMultiOrDivide ) // обработка процентов 
-        {
-            if (numsarr.Count == 1)
-            {
-                if (chararr[0] == "%")
-                {
-
-                    numsarr[0] = numsarr[0] / 100;
-                }
-
-                return;
-            }
-            if (IsMultiOrDivide == true) //для умножения и деления
-            {
-                int temp =  nowchar;
-                if (temp != 0) 
-                {
-                    if (chararr[temp - 1] == "%")
-                    {
-                        numsarr[temp - 1] = numsarr[temp - 1] / 100;
-                        chararr.RemoveAt(temp - 1);
-                        temp--;
-                    }
-                }
-                if (chararr.Count > temp +1)
-                {
-                    if (chararr[temp + 1] == "%")
-                    {
-                        numsarr[temp + 1] = numsarr[temp + 1] / 100;
-                        chararr.RemoveAt(temp + 1);
-                    }
-                }
-                nowchar = temp;
-
-            }
-            else if (IsMultiOrDivide == false) // для плюса и  минуса
-            {
-                int temp = nowchar;
-
-                if (temp != 0)
-                {
-                    if (chararr[temp - 1] == "%")
-                    {
-                        numsarr[temp - 1] = numsarr[temp - 1] / 100;
-                        chararr.RemoveAt(temp - 1);
-                        temp--;
-                    }
-                }
-                if (chararr.Count > temp +1)
-                {
-                    if (chararr[temp + 1] == "%")
-                    {
-                        numsarr[temp + 1] = numsarr[temp + 1] / 100 * numsarr[temp];
-                        chararr.RemoveAt(temp + 1);
-                    }
-                }
-                nowchar = temp;
-            }
-            
-        }
 
         public void DivideAndMultiplyEquals()// like a  ÷ × + -  % √ ² 
         {
@@ -602,8 +512,6 @@ namespace Calculator
                 Getthecurrentexample();
                 if (numsarr.Count == 1)
                 {
-                    int f = 0;
-                    percentages(ref f, false);
                     _Equals();
                     return;
                 }
