@@ -17,8 +17,25 @@ namespace Calculator
         public MainPage()
         {
             InitializeComponent();
-
         }
+        private double _oldwidth, _oldhight;
+        protected override void OnSizeAllocated(double width, double height)
+        {
+         base.OnSizeAllocated(width, height);
+            if(width != _oldwidth  || height != _oldhight)
+            {
+                _oldwidth = width;
+                _oldhight = height;
+                if (width>height)
+                {
+                    secondlabel.Text = "Landscape";
+                }
+                else { secondlabel.Text = "Portrait"; }
+            }
+            
+        }
+        
+
         List<double> numsarr = new List<double>();
         List<string> chararr = new List<string>(); 
         

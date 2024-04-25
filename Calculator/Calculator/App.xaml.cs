@@ -25,5 +25,5 @@ namespace Calculator
         protected override void OnResume()
         {
         }
-    }
+   }
 }
