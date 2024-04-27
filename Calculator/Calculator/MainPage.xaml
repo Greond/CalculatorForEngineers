@@ -1,10 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Calculator.MainPage">
+             x:Class="Calculator.MainPage"
+             Background="#1c1c1c"
+             >
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style x:Key ="infostyle" TargetType="Button">
+            <Style x:Key ="infostyle" TargetType="Button" x:Name="InfoStyle" >
                 <Setter Property="WidthRequest" Value="60" />
                 <Setter Property="HeightRequest" Value="60" />
                 <Setter Property="BorderRadius" Value="49" />
@@ -22,63 +24,77 @@
                 <Setter Property="FontSize" Value="40"/>
                 <Setter Property="BackgroundColor" Value="#333233"/>
             </Style>
+            <Style x:Key ="infostyle2" TargetType="Button" x:Name="InfoStyle2" >
+                <Setter Property="WidthRequest" Value="60" />
+                <Setter Property="HeightRequest" Value="60" />
+                <Setter Property="BorderRadius" Value="49" />
+                <Setter Property="CornerRadius" Value="30"/>
+                <Setter Property="TextColor" Value="#318ef7" />
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="BackgroundColor" Value="#121212"/>
+            </Style>
+
         </ResourceDictionary>
     </ContentPage.Resources>
-
-    <Grid Padding="5,0" RowSpacing="5" ColumnSpacing="5" BackgroundColor="#1c1c1c" >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <StackLayout Grid.Row="0"  Grid.ColumnSpan ="4" Orientation="Vertical" Padding="5" Margin="0,25,0,0"  >
-            <Label x:Name="mainlabel" FontSize="40" FontAttributes="Bold" Padding="5"
+    <StackLayout Background="#1c1c1c" >
+        <StackLayout  Orientation="Vertical" BackgroundColor="#1c1c1c">
+            <Label x:Name="mainlabel" FontSize="40" FontAttributes="Bold" Margin ="0,50,10,0"
 BackgroundColor="#1c1c1c" Text="27,49+324,2÷34,12" 
 TextColor="AntiqueWhite" 
 HorizontalTextAlignment="End" 
 VerticalTextAlignment="Center"
 LineBreakMode="HeadTruncation"
 />
-            <Label x:Name="secondlabel" Text="aob" FontSize="20"  HorizontalTextAlignment="End" VerticalTextAlignment="Center" LineBreakMode="NoWrap" Margin="0,0,20,0"/>
+            <Label x:Name="secondlabel" Text="aob" FontSize="30"  HorizontalTextAlignment="End" VerticalTextAlignment="Center" LineBreakMode="NoWrap" Margin="0,0,20,0"/>
         </StackLayout>
+        <Grid x:Name="GridForGrids"  BackgroundColor="#1c1c1c" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="0,11,0,0"  >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" x:Name="Column0"/>
+            </Grid.ColumnDefinitions>
 
+            <Grid Padding="0,0" RowSpacing="5" ColumnSpacing="5" BackgroundColor="#1c1c1c" x:Name="MainGrid" HorizontalOptions="FillAndExpand" Margin="0,0,0,0"  Grid.Column="0" >
+            <Grid.RowDefinitions>
 
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                
+            </Grid.ColumnDefinitions>
+            <Button Text="C" Grid.Column="0" Grid.Row="0" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="ClearAll" />
+            <Button Text="π" Grid.Column="1" Grid.Row="0" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="numsbuttonclick" />
+            <Button Text="%" Grid.Column="2" Grid.Row="0" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick" />
+            <Button Text="⌫" Grid.Column="3" Grid.Row="0" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="BackSpaceButtonClick" />
+            <Button Text="⅟ₓ" Grid.Column="0" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick"/>
+            <Button Text="X²" Grid.Column="1" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick"/>
+            <Button Text="√" Grid.Column="2" Grid.Row="1" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
+            <Button Text="÷" Grid.Column="3" Grid.Row="1" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
+            <Button Text="×" Grid.Column="3" Grid.Row="2" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
+            <Button Text="-" Grid.Column="3" Grid.Row="3" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
+            <Button Text="+" Grid.Column="3" Grid.Row="4" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
+            <Button Text="=" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="5" Style="{StaticResource  infostyle}" BackgroundColor="#7545f7" TextColor="Black" Clicked="EqualsButtonClick" />
+            <Button Text="," Grid.Row="5" Grid.Column="0" Style="{StaticResource numstyle}"  Clicked="charbuttonclick"/>
 
-
-        <Button Text="C" Grid.Column="0" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="ClearAll" />
-        <Button Text="π" Grid.Column="1" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="numsbuttonclick" />
-        <Button Text="%" Grid.Column="2" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick" />
-        <Button Text="⌫" Grid.Column="3" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="BackSpaceButtonClick" />
-        <Button Text="⅟ₓ" Grid.Column="0" Grid.Row="2" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick"/>
-        <Button Text="X²" Grid.Column="1" Grid.Row="2" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick"/>
-        <Button Text="√" Grid.Column="2" Grid.Row="2" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
-        <Button Text="÷" Grid.Column="3" Grid.Row="2" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
-        <Button Text="×" Grid.Column="3" Grid.Row="3" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
-        <Button Text="-" Grid.Column="3" Grid.Row="4" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
-        <Button Text="+" Grid.Column="3" Grid.Row="5" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
-        <Button Text="=" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="6" Style="{StaticResource  infostyle}" BackgroundColor="#7545f7" TextColor="Black" Clicked="EqualsButtonClick" />
-        <Button Text="," Grid.Row="6" Grid.Column="0" Style="{StaticResource numstyle}"  Clicked="charbuttonclick"/>
-
-        <Button Text="9" Grid.Column="2" Grid.Row ="3" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="8" Grid.Column="1" Grid.Row ="3" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="7" Grid.Column="0" Grid.Row ="3" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="6" Grid.Column="2" Grid.Row ="4" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="5" Grid.Column="1" Grid.Row ="4" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="4" Grid.Column="0" Grid.Row ="4" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="3" Grid.Column="2" Grid.Row ="5" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="2" Grid.Column="1" Grid.Row ="5" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="1" Grid.Column="0" Grid.Row ="5" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-        <Button Text="0" Grid.Column="1" Grid.Row ="6" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
-
+            <Button Text="9" Grid.Column="2" Grid.Row ="2" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"  />
+            <Button Text="8" Grid.Column="1" Grid.Row ="2" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+            <Button Text="7" Grid.Column="0" Grid.Row ="2" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+            <Button Text="6" Grid.Column="2" Grid.Row ="3" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+            <Button Text="5" Grid.Column="1" Grid.Row ="3" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+            <Button Text="4" Grid.Column="0" Grid.Row ="3" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+            <Button Text="3" Grid.Column="2" Grid.Row ="4" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+            <Button Text="2" Grid.Column="1" Grid.Row ="4" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+            <Button Text="1" Grid.Column="0" Grid.Row ="4" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+            <Button Text="0" Grid.Column="1" Grid.Row ="5" Style="{StaticResource numstyle}" Clicked="numsbuttonclick"/>
+        </Grid>
+            
     </Grid>
+    </StackLayout>
 </ContentPage>
