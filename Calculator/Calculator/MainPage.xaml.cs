@@ -221,7 +221,7 @@ namespace Calculator
 
         List<double> numsarr = new List<double>();
         List<string> chararr = new List<string>();
-        string[] enginerschars = {"sin", "cos", "x³","tan", "log", "ln", "!" };
+        string[] enginerschars = { "log", "ln","!", "x³", "sin", "cos", "tan","sinh","cosh","tanh" }; //"sin", "cos", "x³","tan", "log", "ln", "!" 
         string[] enginersnums = { "e", "φ"};
         
         private bool Rad = true;
@@ -289,12 +289,12 @@ namespace Calculator
         public void charbuttonclick(object sender, EventArgs e)  //  доделать чтобы знак ⅟ₓ можно было использовать после корня
         {
             Button btn = (Button)sender;
-            if (btn.Text == "sin" | btn.Text == "cos" | btn.Text == "tan" | btn.Text == "ln")
+            if (btn.Text == "sin" | btn.Text == "cos" | btn.Text == "tan" | btn.Text == "sinh" | btn.Text == "cosh" | btn.Text == "tanh")
             {
                 if (mainlabel.Text.EndsWith("+") | mainlabel.Text.EndsWith("-") | mainlabel.Text.EndsWith("÷")
                   | mainlabel.Text.EndsWith("×") | mainlabel.Text == string.Empty | mainlabel.Text == "" | mainlabel.Text == " ")
                 {
-                    mainlabel.Text += btn.Text;  //  ⅟
+                    mainlabel.Text += btn.Text;  
                     return;
                 }
                 else return;
@@ -468,7 +468,33 @@ namespace Calculator
                 }
                 else { chararr.Add(str[i].ToString()); }
             }
-            if (str.Contains("sin") |  str.Contains("cos")| str.Contains("tan"))
+            if (str.Contains("sinh") | str.Contains("cosh")|str.Contains("tanh"))
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (str[i] == 's' | str[i] == 'c' | str[i] == 't')
+                    {
+                        if (str[i+3] == 'h')
+                        {
+                                chararr.Add(str[i]+"h");
+                                i = i + 3;
+                        }
+                    }
+                    else
+                    {
+                        if (i == 0)
+                        {
+                            chararr.Add(str[i].ToString());
+                        }
+                        else
+                        {
+                            skipminus(i);
+                        }
+                    }
+                }
+                return;
+            }
+            else if (str.Contains("sin") |  str.Contains("cos")| str.Contains("tan"))
             {
                 int temp = str.Length - 1;
                 for (int i = 0; i < temp+1;i++)
@@ -525,7 +551,7 @@ namespace Calculator
             haverror = false;
 
             string inputString = mainlabel.Text;
-            char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟', 's', 'i', 'n', 'c', 'o', 's', 't', 'a','n' }; // ÷ + - × % √ ² ⅟
+            char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟', 's', 'i', 'n', 'c', 'o', 's', 't', 'a','n','h' }; // ÷ + - × % √ ² ⅟
             string[] nums = inputString.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < nums.Length; i++)
             {
@@ -704,6 +730,27 @@ namespace Calculator
                     chararr.RemoveAt(i);
                     i--;
                 }
+                else if (chararr[i] == "sh")
+                {
+                    if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                    numsarr[i] = Math.Sinh(numsarr[i]);
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "ch")
+                {
+                    if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                    numsarr[i] = Math.Cosh(numsarr[i]);
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "th")
+                {
+                    if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                    numsarr[i] = Math.Tanh(numsarr[i]);
+                    chararr.RemoveAt(i);
+                    i--;
+                }
             }
 
         }
@@ -818,6 +865,10 @@ namespace Calculator
                 else if (inputlabel[lastindex] == 'n' | inputlabel[lastindex] == 's')
                 {
                    inputlabel = inputlabel.Substring(0, lastindex - 2);
+                }
+                else if (inputlabel[lastindex] == 'h')
+                {
+                    inputlabel = inputlabel.Substring(0, lastindex - 3);
                 }
                 else
                 {
