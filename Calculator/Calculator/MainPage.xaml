@@ -74,7 +74,7 @@ LineBreakMode="HeadTruncation"
             <Button Text="%" Grid.Column="2" Grid.Row="0" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick" />
                 <Button Text="⌫" Grid.Column="3" Grid.Row="0" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="BackSpaceButtonClick" TextColor="#9b4261" />
             <Button Text="⅟ₓ" Grid.Column="1" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick"/>
-            <Button Text="X²" Grid.Column="0" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick"/>
+            <Button Text="x²" TextTransform="Lowercase" Grid.Column="0" Grid.Row="1" Style="{StaticResource infostyle}" BackgroundColor="#121212" CornerRadius="30" Clicked="charbuttonclick"/>
             <Button Text="√" Grid.Column="2" Grid.Row="1" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
             <Button Text="÷" Grid.Column="3" Grid.Row="1" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
             <Button Text="×" Grid.Column="3" Grid.Row="2" Style="{StaticResource  infostyle}" Clicked="charbuttonclick" CornerRadius="30"/>
