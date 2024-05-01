@@ -5,6 +5,7 @@ using System.ComponentModel.Design;
 using System.Diagnostics.SymbolStore;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,6 +15,73 @@ using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 namespace Calculator
 {
+    public class Convector
+    {
+        public string ConvertTo2(string num, int round = 5)
+        {
+            try { 
+            bool firstminus = false;
+                if (num.StartsWith("-")) 
+                {firstminus = true; num = num.Substring(1);}
+            string result = ""; //Результат
+            long left = 0; //Целая часть
+            string right = "0"; //Дробная часть
+            string[] temp1 = num.Split(new char[] { '.', ',' }); //Нужна для разделения целой и дробной частей
+            left = Convert.ToInt64(temp1[0]);
+            //Проверяем имеется ли у нас дробная часть
+            if (temp1.Count() > 1)
+            {
+                right = num.Split(new char[] { '.', ',' })[1]; //Дробная часть
+            }
+            //Алгоритм перевода целой части в двоичную систему
+            while (true)
+            {
+                result += left % 2; //В ответ помещаем остаток от деления. В конце программы мы перевернём строку, так как в обратном порядке записываются остатки
+                left = left / 2; //Так как Left целое число, то при делении например числа 2359 на 2, мы получим не 1179,5 а 1179
+                if (left == 0)
+                    break;
+            }
+            result = new string(result.ToCharArray().Reverse().ToArray()); //Реверсирование строки
+
+            //Прокеряем есть ли у нас дробная часть, можно было бы проверить и так if(temp1.count()>1)
+            if (temp1.Count() == 1)
+                {
+                    if (firstminus) { return "-" + result; }
+                    else { return result; }
+                }
+
+            //Добавляем разделить целой части от дробной
+            result += ',';
+
+            int count = right.ToString().Count(); // Нам нужно знать кол-во цифр, при превышении которого дописывается единичка
+            long INTright = Convert.ToInt64(right);
+
+            for (int i = 0; i < round; i++)
+            {
+                /*Умножаем число на 2 и проверяем, стало ли оно больше по количеству цифр, если да,
+                то в результат идёт "1" и первая цифра у right удаляется */
+                INTright = INTright * 2;
+                if (INTright.ToString().Count() > count)
+                {
+                    string buf = INTright.ToString();
+                    buf = buf.Remove(0, 1);
+                    INTright = Convert.ToInt64(buf);
+
+                    result += '1';
+                }
+                else
+                {
+                    result += '0';
+                }
+            }
+
+                if (firstminus) { return "-" + result; }
+                else { return result; }
+            }
+            catch { return "large number"; }
+        }
+       
+    }
     public partial class MainPage : ContentPage
     {
       
@@ -153,6 +221,9 @@ namespace Calculator
                     Grid.SetColumn(rad, 2);
                     Grid.SetRow(rad, 5);
                     // rad/>
+                    addRadioButton("Bin", "systems", 4, 0);
+                    addRadioButton("Oct", "systems", 4, 1);
+                    addRadioButton("Dec", "systems", 4, 2);
 
 
                        int n =0;
@@ -208,7 +279,44 @@ namespace Calculator
                         } 
                             
                     }
+                    void addRadioButton(string text,string groupname,int row,int column)
+                    {
+                        RadioButton radioButton = new RadioButton();
+                        radioButton.GroupName = groupname;
+                        radioButton.Content = text;
+                        radioButton.BackgroundColor = Color.FromHex("#19155c");
+                        radioButton.CornerRadius = 30;
+                        radioButton.FontSize = 15;
+                        radioButton.FontAttributes = FontAttributes.Bold;
+                        radioButton.TextColor = Color.FromHex("#bdbdc7fc");
+                        radioButton.CheckedChanged += (sender, e) =>
+                        {
+                            if (radioButton.IsChecked == false) { return; }
+                            switch (radioButton.Content.ToString())
+                            {
+                                case "Dec":
+                                    Dec = true;
+                                    Bin = false;
+                                    Oct = false;
+                                    break;
+                                case "Bin":
+                                    Bin = true;
+                                    Oct = false;
+                                    Dec = false;
+                                    break;
+                                case "Oct":
+                                    Oct = true;
+                                    Bin = false;
+                                    Dec = false; 
+                                    break;
+                            }
+                            CanEquals();
+                        };
+                        Grid2.Children.Add(radioButton);
+                        Grid.SetColumn(radioButton, column);
+                        Grid.SetRow(radioButton, row);
 
+                    }
                 }
                 else { //  Portriet
                     mainlabel.Margin = new Thickness(0, 50, 10, 0);
@@ -245,9 +353,15 @@ namespace Calculator
         readonly string[] enginerschars = { "log", "ln","x!", "x³", "sin", "cos", "tan","sinh","cosh","tanh" }; //"sin", "cos", "x³","tan", "log", "ln", "!" 
         readonly string[] enginersnums = { "e", "φ"};
         
+        private bool Dec = true;
+        private bool Oct = false;
+        private bool Bin = false;
+
         private bool Rad = true;
         private bool Deg = false;
+
         private bool inv = false;
+
         private bool haverror = false;
 
         
@@ -466,6 +580,7 @@ namespace Calculator
                     else
                     {
                         mainlabel.Text += btn.Text;
+                        
                     }
                 }
                 else
@@ -509,10 +624,17 @@ namespace Calculator
                 PlusAndMinusEquals();
                 secondpriority--;
             }
-          
-           
-            secondlabel.Text = numsarr[0].ToString();
-            if  (haverror ==  true) { secondlabel.Text = "Syntax Erorr"; }
+            if (haverror == true) { secondlabel.Text = "Syntax Erorr"; }
+            else
+            {
+                Convector convector = new Convector();
+                if (Bin == true)
+                { secondlabel.Text = convector.ConvertTo2(numsarr[0].ToString()) + "₂"; }
+                else
+                {
+                    secondlabel.Text = numsarr[0].ToString();
+                }
+            }
         }
 
          public void charsort(string str) // str это строка с знаками или знаком, а pos это номер в цикле for 
@@ -1212,5 +1334,6 @@ namespace Calculator
                 catch { ClearAll(sender, e); }
 
         }
+
     }
 }
