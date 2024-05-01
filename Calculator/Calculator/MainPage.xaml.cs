@@ -5,6 +5,7 @@ using System.ComponentModel.Design;
 using System.Diagnostics.SymbolStore;
 using System.Globalization;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -221,7 +222,7 @@ namespace Calculator
 
         List<double> numsarr = new List<double>();
         List<string> chararr = new List<string>();
-        string[] enginerschars = { "log", "ln","!", "x³", "sin", "cos", "tan","sinh","cosh","tanh" }; //"sin", "cos", "x³","tan", "log", "ln", "!" 
+        string[] enginerschars = { "log", "ln","x!", "x³", "sin", "cos", "tan","sinh","cosh","tanh" }; //"sin", "cos", "x³","tan", "log", "ln", "!" 
         string[] enginersnums = { "e", "φ"};
         
         private bool Rad = true;
@@ -239,7 +240,7 @@ namespace Calculator
             char temp = mainlabel.Text[mainlabel.Text.Length - 1];
 
             if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9'
-                | temp == '%' | temp == 'π' | temp == 'e' | temp == 'φ' | temp == '³' | temp == '²') 
+                | temp == '%' | temp == 'π' | temp == 'e' | temp == 'φ' | temp == '³' | temp == '²'| temp ==  '!') 
             {
                 Getthecurrentexample();
                 _Equals();
@@ -263,7 +264,7 @@ namespace Calculator
         {
             Button btn = (Button)sender;
             
-            if (mainlabel.Text.EndsWith("%") | mainlabel.Text.EndsWith("²")|mainlabel.Text.EndsWith("³") | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ"))
+            if (mainlabel.Text.EndsWith("%") | mainlabel.Text.EndsWith("²")|mainlabel.Text.EndsWith("³") | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ") | mainlabel.Text.EndsWith("!"))
             {
                 return ;
                 
@@ -289,7 +290,20 @@ namespace Calculator
         public void charbuttonclick(object sender, EventArgs e)  //  доделать чтобы знак ⅟ₓ можно было использовать после корня
         {
             Button btn = (Button)sender;
-            if (btn.Text == "sin" | btn.Text == "cos" | btn.Text == "tan" | btn.Text == "sinh" | btn.Text == "cosh" | btn.Text == "tanh")
+            if (btn.Text == "x!")// куб
+            {
+                if (mainlabel.Text == string.Empty | mainlabel.Text == "") { return; }
+                char temp = mainlabel.Text[mainlabel.Text.Length - 1];
+                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ"))
+                {
+                    mainlabel.Text += "!";
+                    Getthecurrentexample();
+                    _Equals();
+                    return;
+                }
+                else return;
+            }
+            if (btn.Text == "sin" | btn.Text == "cos" | btn.Text == "tan" | btn.Text == "sinh" | btn.Text == "cosh" | btn.Text == "tanh" | btn.Text == "log" |  btn.Text ==  "ln")
             {
                 if (mainlabel.Text.EndsWith("+") | mainlabel.Text.EndsWith("-") | mainlabel.Text.EndsWith("÷")
                   | mainlabel.Text.EndsWith("×") | mainlabel.Text == string.Empty | mainlabel.Text == "" | mainlabel.Text == " ")
@@ -315,7 +329,8 @@ namespace Calculator
             {
                 if (mainlabel.Text == string.Empty | mainlabel.Text == "") { return; }
                 char temp = mainlabel.Text[mainlabel.Text.Length - 1];
-                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ"))
+                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' 
+                    | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ")| temp == '!')
                 {
                     mainlabel.Text += "³";
                     Getthecurrentexample();
@@ -328,7 +343,8 @@ namespace Calculator
             {
                 if (mainlabel.Text == string.Empty |  mainlabel.Text == "") { return; }
                 char  temp = mainlabel.Text[mainlabel.Text.Length - 1];
-                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ"))
+                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9'
+                    | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ") | temp == '!' )
                 {
                     mainlabel.Text += "²";
                     Getthecurrentexample();
@@ -352,7 +368,7 @@ namespace Calculator
             {
                 char temp = mainlabel.Text[mainlabel.Text.Length - 1];
                 if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9'
-                    | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ") |  temp == '²' | temp == '³')
+                    | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ") |  temp == '²' | temp == '³'|temp == '!')
                 {
                     mainlabel.Text += btn.Text;
                     Getthecurrentexample();
@@ -388,7 +404,7 @@ namespace Calculator
                 {
 
                     string inputString = mainlabel.Text;
-                    char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟','s','i','n','c','o','t','a','n' }; 
+                    char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟','s','i','n','c','o','t','a','n','!' }; 
                     string[] nums = inputString.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
                     bool containsdot = nums[nums.Length - 1].Contains(","); 
                     if (inputString.EndsWith("e") | inputString.EndsWith("φ") | inputString.EndsWith("t") | inputString.EndsWith("π")) //"e","φ","t","π"
@@ -551,7 +567,7 @@ namespace Calculator
             haverror = false;
 
             string inputString = mainlabel.Text;
-            char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟', 's', 'i', 'n', 'c', 'o', 's', 't', 'a','n','h' }; // ÷ + - × % √ ² ⅟
+            char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟', 's', 'i', 'n', 'c', 'o', 's', 't', 'a','n','h','!','l','o','g' }; // ÷ + - × % √ ² ⅟
             string[] nums = inputString.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < nums.Length; i++)
             {
@@ -751,6 +767,29 @@ namespace Calculator
                     chararr.RemoveAt(i);
                     i--;
                 }
+                else if (chararr[i] == "!")
+                {
+                    if (numsarr[i].ToString().Contains(",")) {haverror = true; }
+                    else
+                    {
+                        try
+                        {
+                            int temp = Convert.ToInt32(numsarr[i]);
+                            long result = 1;
+                            for (int j = 1; j < temp + 1; j++)
+                            {
+                                result = result * j;
+                            }
+                            numsarr[i] = Convert.ToDouble(result);
+                        }
+                        catch
+                        {
+                            haverror = true;
+                        }
+                    }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
             }
 
         }
@@ -901,7 +940,7 @@ namespace Calculator
                     char temp = mainlabel.Text[mainlabel.Text.Length-1];
 
                     if (temp == '0'|temp == '1'|temp == '2'|temp == '3'|temp == '4'|temp == '5'|temp=='6'|temp == '7'|temp=='8'|temp=='9' 
-                        | temp == '%' | temp == 'π' | temp == 'e' | temp == 'φ' | temp == '³' | temp == '²')  // вычислять если возможно после удаления последнего элемента
+                        | temp == '%' | temp == 'π' | temp == 'e' | temp == 'φ' | temp == '³' | temp == '²' | temp  == '!')  // вычислять если возможно после удаления последнего элемента
                     {
                         Getthecurrentexample();
                             _Equals();
