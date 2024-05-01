@@ -283,10 +283,38 @@ namespace Calculator
                 if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ")) 
                 { return ; }
             }
+            else if (btn.Text == "e")
+            {
+                if (mainlabel.Text == string.Empty | mainlabel.Text == "")
+                {
+                    mainlabel.Text += btn.Text;
+                    Getthecurrentexample();
+                    _Equals();
+                    return;
+                }
+
+                char temp = mainlabel.Text[mainlabel.Text.Length - 1];
+                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ"))
+                { return; }
+            }
+            else if (btn.Text == "φ")
+            {
+                if (mainlabel.Text == string.Empty | mainlabel.Text == "")
+                {
+                    mainlabel.Text += btn.Text;
+                    Getthecurrentexample();
+                    _Equals();
+                    return;
+                }
+
+                char temp = mainlabel.Text[mainlabel.Text.Length - 1];
+                if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9' | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ"))
+                { return; }
+            }
             mainlabel.Text += btn.Text;
             Getthecurrentexample();
             _Equals();
-            }
+         }
         public void charbuttonclick(object sender, EventArgs e)  //  доделать чтобы знак ⅟ₓ можно было использовать после корня
         {
             Button btn = (Button)sender;
@@ -375,6 +403,7 @@ namespace Calculator
                     _Equals();
                     return;
                 }
+                else { return ; }
             }
 
 
@@ -389,11 +418,11 @@ namespace Calculator
             }
             else
             {
-                if (mainlabel.Text.EndsWith("+")  | mainlabel.Text.EndsWith(",") | mainlabel.Text.EndsWith("-") | mainlabel.Text.EndsWith("√"))
+                if (mainlabel.Text.EndsWith("+")  | mainlabel.Text.EndsWith(",") | mainlabel.Text.EndsWith("-") | mainlabel.Text.EndsWith("√") | mainlabel.Text.EndsWith("ln") | mainlabel.Text.EndsWith("log"))
                 {
                     return;
                 }
-                else if (mainlabel.Text.EndsWith("÷") | mainlabel.Text.EndsWith("×") | mainlabel.Text.EndsWith("n") | mainlabel.Text.EndsWith("s"))
+                else if (mainlabel.Text.EndsWith("÷") | mainlabel.Text.EndsWith("×") | mainlabel.Text.EndsWith("n") | mainlabel.Text.EndsWith("s") | mainlabel.Text.EndsWith("h"))
                 {
                     if (btn.Text == "-")
                     {
@@ -404,7 +433,7 @@ namespace Calculator
                 {
 
                     string inputString = mainlabel.Text;
-                    char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟','s','i','n','c','o','t','a','n','!' }; 
+                    char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟','s','i','n','c','o','t','a','n','!','l','o','n','g' }; 
                     string[] nums = inputString.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
                     bool containsdot = nums[nums.Length - 1].Contains(","); 
                     if (inputString.EndsWith("e") | inputString.EndsWith("φ") | inputString.EndsWith("t") | inputString.EndsWith("π")) //"e","φ","t","π"
@@ -465,16 +494,26 @@ namespace Calculator
             if  (haverror ==  true) { secondlabel.Text = "Erorr"; }
         }
 
-         public void charsort(string str, int pos) // str это строка с знаками или знаком, а pos это номер в цикле for 
+         public void charsort(string str) // str это строка с знаками или знаком, а pos это номер в цикле for 
         {
+            int checkchar()// крч чтобы выбрать нужное  число  нада  найти значимые  знаки после которых  точно идут новые числа типа как + - "÷" "×"
+            {
+                int  result = 0;
+                for (int i = 0; i < chararr.Count; i++)
+                {
+                    if (chararr[i] == "×" | chararr[i] == "÷" | chararr[i] == "+" | chararr[i] == "-")
+                        { result++;}
+                }
+                return result;
+            }
             void  skipminus(int i) // i is a number of char position in  string 
             {
-
+                int pos = checkchar();
                 if (str[i] == '-' & str[i - 1] == '÷' | str[i] == '-' & str[i - 1] == '×')
                 {
-                    numsarr[pos + 1] = numsarr[pos + 1] * -1;
+                    numsarr[pos ] = numsarr[pos ] * -1;
                 }
-                else if (str[i] == '-' & str[i-1] == 'n' | str[i] == '-' & str[i - 1] == 's' )
+                else if (str[i] == '-' & str[i-1] == 'n' | str[i] == '-' & str[i - 1] == 's' | str[i] == '-' & str[i - 1] == 'h')
                 {
                     numsarr[pos]  = numsarr[pos] * -1;
                 }
@@ -483,6 +522,34 @@ namespace Calculator
                     numsarr[pos] = numsarr[pos] * -1;
                 }
                 else { chararr.Add(str[i].ToString()); }
+            }
+            if (str.Contains("log") | str.Contains("ln"))
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (str[i] == 'l' & str[i + 1] == 'n')
+                    {
+                        chararr.Add("ln");
+                        i = i + 1;
+                    }
+                    else if (str[i] == 'l' & str[i + 1] == 'o' & str[i + 2] == 'g')
+                    {
+                        chararr.Add("log");
+                        i = i + 2;
+                    }
+                    else
+                    {
+                        if (i == 0)
+                        {
+                            chararr.Add(str[i].ToString());
+                        }
+                        else
+                        {
+                            skipminus(i);
+                        }
+                    }
+                }
+                return;
             }
             if (str.Contains("sinh") | str.Contains("cosh")|str.Contains("tanh"))
             {
@@ -625,19 +692,18 @@ namespace Calculator
                 }
                 array = newarray;
             }
-
-            char[] delimetrnums = { ',', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ,' ' ,'E','Е','e','е', '#', 'π', 'φ' };
-            string[] chars = inputString.Split(delimetrnums, System.StringSplitOptions.RemoveEmptyEntries);
             if (mainlabel.Text.StartsWith("-", true, null)) // первое число минусовое
             {
                 numsarr[0] = numsarr[0] * -1;
-                removeat(ref chars, 0);
+                inputString = inputString.Substring(1);
             }
+            char[] delimetrnums = { ',', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ,' ' ,'E','Е','e','е', '#', 'π', 'φ' };
+            string[] chars = inputString.Split(delimetrnums, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < chars.Length; i++) 
             {
                 try
                 {
-                    charsort(chars[i],i);
+                    charsort(chars[i]);
                 }
                 catch (Exception ex)
                 {
@@ -683,7 +749,7 @@ namespace Calculator
                 }
                 else if (chararr[i] == "%")
                 {
-                    if (i!=0 )
+                    if (i != 0)
                     {
                         if (chararr[i - 1] == "+" | chararr[i - 1] == "-")
                         {
@@ -719,9 +785,9 @@ namespace Calculator
                 }
                 else if (chararr[i] == "⅟")
                 {
-                        numsarr[i] = Math.Pow(numsarr[i],-1);
-                        chararr.RemoveAt(i);
-                        i--;
+                    numsarr[i] = Math.Pow(numsarr[i], -1);
+                    chararr.RemoveAt(i);
+                    i--;
                 }
                 else if (chararr[i] == "s")
                 {
@@ -729,7 +795,7 @@ namespace Calculator
                     numsarr[i] = Math.Sin(numsarr[i]);
                     chararr.RemoveAt(i);
                     i--;
-                    
+
 
                 }
                 else if (chararr[i] == "c")
@@ -739,10 +805,10 @@ namespace Calculator
                     chararr.RemoveAt(i);
                     i--;
                 }
-                else  if (chararr[i] == "t")
+                else if (chararr[i] == "t")
                 {
                     if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
-                    numsarr[i]  = Math.Tan(numsarr[i]);
+                    numsarr[i] = Math.Tan(numsarr[i]);
                     chararr.RemoveAt(i);
                     i--;
                 }
@@ -769,7 +835,7 @@ namespace Calculator
                 }
                 else if (chararr[i] == "!")
                 {
-                    if (numsarr[i].ToString().Contains(",")) {haverror = true; }
+                    if (numsarr[i].ToString().Contains(",")) { haverror = true; }
                     else
                     {
                         try
@@ -787,6 +853,28 @@ namespace Calculator
                             haverror = true;
                         }
                     }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "log")
+                {
+                    try
+                    {
+                        numsarr[i] = Math.Log10(numsarr[i]);
+                    }
+                    catch
+                    { haverror = true; }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "ln")
+                {
+                    try
+                    {
+                        numsarr[i] = Math.Log(numsarr[i]);
+                    }
+                    catch
+                    { haverror = true; }
                     chararr.RemoveAt(i);
                     i--;
                 }
@@ -901,17 +989,28 @@ namespace Calculator
                 {
                     inputlabel = inputlabel.Remove(lastindex - 2);
                 }
-                else if (inputlabel[lastindex] == 'n' | inputlabel[lastindex] == 's')
+                else if (inputlabel[lastindex] == 'n' & inputlabel[lastindex-2] == 's' | inputlabel[lastindex] == 'n' & inputlabel[lastindex - 2] == 't' | inputlabel[lastindex] == 's' | inputlabel[lastindex] == 'g') //  sin cos tan log
                 {
-                   inputlabel = inputlabel.Substring(0, lastindex - 2);
+                   inputlabel = inputlabel.Substring(0, lastindex - 2); // sinh  cosh  tanh log
                 }
                 else if (inputlabel[lastindex] == 'h')
                 {
                     inputlabel = inputlabel.Substring(0, lastindex - 3);
                 }
+                else if (inputlabel[lastindex] == 'n' & inputlabel[lastindex - 1] == 'l') //  ln
+                {
+                    inputlabel = inputlabel.Remove(lastindex - 1);
+                }
                 else
                 {
                     inputlabel = inputlabel.Remove(lastindex);
+                }
+            }
+            else if (lastindex == 1 & inputlabel[lastindex] == 'n') //  ln
+            {
+                if (inputlabel[lastindex - 1] == 'l')
+                {
+                    inputlabel = inputlabel.Remove(lastindex - 1);
                 }
             }
             else
