@@ -72,9 +72,27 @@ namespace Calculator
                     Switch @switch = new Switch();
                     @switch.OnColor = Color.FromHex("#318ef7");
                     @switch.ThumbColor = Color.White;
+                    inv = false;
                     @switch.Toggled += (sender, e) =>
                     {
                         inv = !inv;
+                        if (inv ==  true)
+                        { // 14 = это кнопка с tanh
+                            for (int i = 9; i < 15; i++)
+                            {
+                                Button Abutton = Grid2.Children[i] as Button;
+                                Abutton.TextTransform = TextTransform.None;
+                                Abutton.Text = "A" + Abutton.Text;
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 9; i < 15; i++)
+                            {
+                                Button Abutton = Grid2.Children[i] as Button;
+                                Abutton.Text = Abutton.Text.Substring(1);
+                            }
+                        }
                     };
 
                     StackLayout stackLayout = new StackLayout();
@@ -331,7 +349,8 @@ namespace Calculator
                 }
                 else return;
             }
-            if (btn.Text == "sin" | btn.Text == "cos" | btn.Text == "tan" | btn.Text == "sinh" | btn.Text == "cosh" | btn.Text == "tanh" | btn.Text == "log" |  btn.Text ==  "ln")
+            if (btn.Text == "sin" | btn.Text == "cos" | btn.Text == "tan" | btn.Text == "sinh" | btn.Text == "cosh" | btn.Text == "tanh" | btn.Text == "log" |  btn.Text ==  "ln" 
+                | btn.Text == "Asin" | btn.Text == "Acos" | btn.Text == "Atan" | btn.Text == "Asinh" | btn.Text == "Acosh" | btn.Text == "Atanh")  
             {
                 if (mainlabel.Text.EndsWith("+") | mainlabel.Text.EndsWith("-") | mainlabel.Text.EndsWith("÷")
                   | mainlabel.Text.EndsWith("×") | mainlabel.Text == string.Empty | mainlabel.Text == "" | mainlabel.Text == " ")
@@ -433,7 +452,7 @@ namespace Calculator
                 {
 
                     string inputString = mainlabel.Text;
-                    char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟','s','i','n','c','o','t','a','n','!','l','o','n','g' }; 
+                    char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟','s','i','n','c','o','t','a','n','!','l','o','n','g','A' }; 
                     string[] nums = inputString.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
                     bool containsdot = nums[nums.Length - 1].Contains(","); 
                     if (inputString.EndsWith("e") | inputString.EndsWith("φ") | inputString.EndsWith("t") | inputString.EndsWith("π")) //"e","φ","t","π"
@@ -523,6 +542,7 @@ namespace Calculator
                 }
                 else { chararr.Add(str[i].ToString()); }
             }
+
             if (str.Contains("log") | str.Contains("ln"))
             {
                 for (int i = 0; i < str.Length; i++)
@@ -551,7 +571,57 @@ namespace Calculator
                 }
                 return;
             }
-            if (str.Contains("sinh") | str.Contains("cosh")|str.Contains("tanh"))
+            if (str.Contains("Asinh") | str.Contains("Acosh") | str.Contains("Atanh"))
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (str[i] == 'A')
+                    {
+                        chararr.Add(str.Substring(i, 5));
+                        i = i + 4;
+                    }
+                    else
+                    {
+
+                        if (i == 0)
+                        {
+                            chararr.Add(str[i].ToString());
+                        }
+                        else
+                        {
+                            skipminus(i);
+                        }
+                    }
+                }
+                return;
+
+            }
+            else if (str.Contains("Asin") | str.Contains("Acos") | str.Contains("Atan"))
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (str[i]== 'A')
+                    {
+                        chararr.Add(str.Substring(i, 4));
+                        i = i + 3;
+                    }
+                    else
+                    {
+
+                        if (i == 0)
+                        {
+                            chararr.Add(str[i].ToString());
+                        }
+                        else
+                        {
+                            skipminus(i);
+                        }
+                    }
+                }
+                return;
+
+            }
+            else if (str.Contains("sinh") | str.Contains("cosh")|str.Contains("tanh"))
             {
                 for (int i = 0; i < str.Length; i++)
                 {
@@ -634,7 +704,7 @@ namespace Calculator
             haverror = false;
 
             string inputString = mainlabel.Text;
-            char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟', 's', 'i', 'n', 'c', 'o', 's', 't', 'a','n','h','!','l','o','g' }; // ÷ + - × % √ ² ⅟
+            char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟', 's', 'i', 'n', 'c', 'o', 's', 't', 'a','n','h','!','l','o','g','A' }; // ÷ + - × % √ ² ⅟
             string[] nums = inputString.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < nums.Length; i++)
             {
@@ -878,6 +948,53 @@ namespace Calculator
                     chararr.RemoveAt(i);
                     i--;
                 }
+                else if (chararr[i] == "Asin")
+                {
+                    try
+                    {
+                        if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                        numsarr[i] = Math.Asin(numsarr[i]);
+                    }
+                    catch
+                    { haverror = true; }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "Acos")
+                {
+                    try
+                    {
+                        if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                        numsarr[i] = Math.Acos(numsarr[i]);
+                    }
+                    catch
+                    { haverror = true; }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "Atan")
+                {
+                    try
+                    {
+                        if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                        numsarr[i] = Math.Atan(numsarr[i]);
+                    }
+                    catch
+                    { haverror = true; }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "Asinh")
+                {
+                    try
+                    {
+                       
+                    }
+                    catch
+                    { haverror = true; }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
             }
 
         }
@@ -991,13 +1108,37 @@ namespace Calculator
                 }
                 else if (inputlabel[lastindex] == 'n' & inputlabel[lastindex-2] == 's' | inputlabel[lastindex] == 'n' & inputlabel[lastindex - 2] == 't' | inputlabel[lastindex] == 's' | inputlabel[lastindex] == 'g') //  sin cos tan log
                 {
-                   inputlabel = inputlabel.Substring(0, lastindex - 2); // sinh  cosh  tanh log
+                    if(lastindex >= 3) 
+                    {
+                        if (inputlabel[lastindex-3] == 'A')
+                        {
+                            inputlabel = inputlabel.Substring(0, lastindex - 3);  // Asin  Acos  Atan
+                        }
+                        else
+                        {
+                            inputlabel = inputlabel.Substring(0, lastindex - 2); // sinh  cosh  tanh log
+                        }
+                    }
+                    else
+                    {
+                        inputlabel = inputlabel.Substring(0, lastindex - 2); // sinh  cosh  tanh log
+                    }
                 }
-                else if (inputlabel[lastindex] == 'h')
+                else if (inputlabel[lastindex] == 'h') // если  в кноце h 
                 {
-                    inputlabel = inputlabel.Substring(0, lastindex - 3);
+                    if (lastindex >= 4) // если размер больше 4 индексов
+                    {
+                        if (inputlabel[lastindex-4] == 'A') //   если с кноце -4 char  равен A 
+                        {
+                            inputlabel = inputlabel.Remove(lastindex-4);  //  Asinh  Acosh  Atanh
+                        }
+                        else
+                        { inputlabel = inputlabel.Substring(0, lastindex - 3); }// sinh  cosh  tanh
+                    }
+                    else
+                    { inputlabel = inputlabel.Substring(0, lastindex - 3); } // sinh  cosh  tanh
                 }
-                else if (inputlabel[lastindex] == 'n' & inputlabel[lastindex - 1] == 'l') //  ln
+                else if (inputlabel[lastindex] == 'n' & inputlabel[lastindex - 1] == 'l') // если удаление посреди строки пример: 2*sin0,3+ln34/2
                 {
                     inputlabel = inputlabel.Remove(lastindex - 1);
                 }
