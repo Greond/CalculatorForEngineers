@@ -36,8 +36,10 @@ namespace Calculator
                     GridForGrids.Margin = new Thickness(0, 0, 0, 0);
                     GridForGrids.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star)}) ;
                     Grid.SetColumn(MainGrid, 1);
+
                     foreach (Button btn in MainGrid.Children)
                     {
+                        
                         btn.FontSize = 14;
                         btn.FontAttributes = FontAttributes.Bold;
                     }
@@ -240,8 +242,8 @@ namespace Calculator
 
         List<double> numsarr = new List<double>();
         List<string> chararr = new List<string>();
-        string[] enginerschars = { "log", "ln","x!", "x³", "sin", "cos", "tan","sinh","cosh","tanh" }; //"sin", "cos", "x³","tan", "log", "ln", "!" 
-        string[] enginersnums = { "e", "φ"};
+        readonly string[] enginerschars = { "log", "ln","x!", "x³", "sin", "cos", "tan","sinh","cosh","tanh" }; //"sin", "cos", "x³","tan", "log", "ln", "!" 
+        readonly string[] enginersnums = { "e", "φ"};
         
         private bool Rad = true;
         private bool Deg = false;
@@ -261,10 +263,10 @@ namespace Calculator
                 | temp == '%' | temp == 'π' | temp == 'e' | temp == 'φ' | temp == '³' | temp == '²'| temp ==  '!') 
             {
                 Getthecurrentexample();
-                _Equals();
+                MainEquals();
             }
         }
-        public void minusreverse(object sender,EventArgs e)
+        public void Minusreverse(object sender,EventArgs e)
         {
             if (mainlabel.Text == "" | mainlabel.Text == string.Empty) { return; }
             if (mainlabel.Text.StartsWith("-")) { mainlabel.Text = mainlabel.Text.Substring(1);}
@@ -275,7 +277,7 @@ namespace Calculator
             if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9'| temp == '%' | temp == 'π' |temp == 'e' | temp == 'φ')  
             {
                 Getthecurrentexample();
-                _Equals();
+                MainEquals();
             }
         }
          public void numsbuttonclick(object sender, EventArgs e)
@@ -293,7 +295,7 @@ namespace Calculator
                 {
                     mainlabel.Text += btn.Text;
                     Getthecurrentexample();
-                    _Equals();
+                    MainEquals();
                     return;
                 }
 
@@ -307,7 +309,7 @@ namespace Calculator
                 {
                     mainlabel.Text += btn.Text;
                     Getthecurrentexample();
-                    _Equals();
+                    MainEquals();
                     return;
                 }
 
@@ -321,7 +323,7 @@ namespace Calculator
                 {
                     mainlabel.Text += btn.Text;
                     Getthecurrentexample();
-                    _Equals();
+                    MainEquals();
                     return;
                 }
 
@@ -331,7 +333,7 @@ namespace Calculator
             }
             mainlabel.Text += btn.Text;
             Getthecurrentexample();
-            _Equals();
+            MainEquals();
          }
         public void charbuttonclick(object sender, EventArgs e)  //  доделать чтобы знак ⅟ₓ можно было использовать после корня
         {
@@ -344,7 +346,7 @@ namespace Calculator
                 {
                     mainlabel.Text += "!";
                     Getthecurrentexample();
-                    _Equals();
+                    MainEquals();
                     return;
                 }
                 else return;
@@ -381,7 +383,7 @@ namespace Calculator
                 {
                     mainlabel.Text += "³";
                     Getthecurrentexample();
-                    _Equals();
+                    MainEquals();
                     return;
                 }
                 else return;
@@ -395,7 +397,7 @@ namespace Calculator
                 {
                     mainlabel.Text += "²";
                     Getthecurrentexample();
-                    _Equals();
+                    MainEquals();
                     return;
                 }
                 else return;
@@ -419,7 +421,7 @@ namespace Calculator
                 {
                     mainlabel.Text += btn.Text;
                     Getthecurrentexample();
-                    _Equals();
+                    MainEquals();
                     return;
                 }
                 else { return ; }
@@ -437,11 +439,11 @@ namespace Calculator
             }
             else
             {
-                if (mainlabel.Text.EndsWith("+")  | mainlabel.Text.EndsWith(",") | mainlabel.Text.EndsWith("-") | mainlabel.Text.EndsWith("√") | mainlabel.Text.EndsWith("ln") | mainlabel.Text.EndsWith("log"))
+                if (mainlabel.Text.EndsWith("+") | mainlabel.Text.EndsWith(",") | mainlabel.Text.EndsWith("-") | mainlabel.Text.EndsWith("√") | mainlabel.Text.EndsWith("ln") | mainlabel.Text.EndsWith("log"))
                 {
                     return;
                 }
-                else if (mainlabel.Text.EndsWith("÷") | mainlabel.Text.EndsWith("×") | mainlabel.Text.EndsWith("n") | mainlabel.Text.EndsWith("s") | mainlabel.Text.EndsWith("h"))
+                else if (mainlabel.Text.EndsWith("÷") | mainlabel.Text.EndsWith("×") | mainlabel.Text.EndsWith("n") | mainlabel.Text.EndsWith("s") | mainlabel.Text.EndsWith("h") | mainlabel.Text.EndsWith("⅟") )
                 {
                     if (btn.Text == "-")
                     {
@@ -477,7 +479,7 @@ namespace Calculator
     }
         // почему я нимогу создать обьект класса  канкулятоra
          
-        private void _Equals() // like a  ÷ × + -  % √ ² 
+        private void MainEquals() // like a  ÷ × + -  % √ ² 
         {
             firstcharsprocessing(); // обработка доп  знаков
 
@@ -487,14 +489,14 @@ namespace Calculator
                 {
                     if (_char == "÷" | _char == "×")
                     {
-                        firstpriority = firstpriority + 1;
+                    firstpriority++;
                     }
                 }
                 foreach (string _char in chararr)
                 {
                     if (_char == "+" | _char == "-")
                     {
-                        secondpriority = secondpriority + 1;
+                    secondpriority++;
                     }
                 }    
            while (firstpriority > 0)
@@ -510,7 +512,7 @@ namespace Calculator
           
            
             secondlabel.Text = numsarr[0].ToString();
-            if  (haverror ==  true) { secondlabel.Text = "Erorr"; }
+            if  (haverror ==  true) { secondlabel.Text = "Syntax Erorr"; }
         }
 
          public void charsort(string str) // str это строка с знаками или знаком, а pos это номер в цикле for 
@@ -550,7 +552,7 @@ namespace Calculator
                     if (str[i] == 'l' & str[i + 1] == 'n')
                     {
                         chararr.Add("ln");
-                        i = i + 1;
+                        i++;
                     }
                     else if (str[i] == 'l' & str[i + 1] == 'o' & str[i + 2] == 'g')
                     {
@@ -793,11 +795,6 @@ namespace Calculator
             await DisplayAlert("Ошибка", temp, "Cancel");
             
         }
-        private string[] scobkisort()
-        {
-            string[] mas = new string[1];
-            return mas;
-        }
         private  void firstcharsprocessing()
         {
             for (int i = 0; i < chararr.Count; i++)
@@ -988,7 +985,32 @@ namespace Calculator
                 {
                     try
                     {
-                       
+                        if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                        numsarr[i] = Math.Asinh(numsarr[i]);
+                    }
+                    catch
+                    { haverror = true; }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "Acosh")
+                {
+                    try
+                    {
+                        if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                        numsarr[i] = Math.Acosh(numsarr[i]);
+                    }
+                    catch
+                    { haverror = true; }
+                    chararr.RemoveAt(i);
+                    i--;
+                }
+                else if (chararr[i] == "Atanh")
+                {
+                    try
+                    {
+                        if (Deg == true) { numsarr[i] = numsarr[i] * Math.PI / 180; }
+                        numsarr[i] = Math.Atanh(numsarr[i]);
                     }
                     catch
                     { haverror = true; }
@@ -1080,7 +1102,7 @@ namespace Calculator
 
        public void EqualsButtonClick(object sender, EventArgs e)
         {
-            if (secondlabel.Text == string.Empty | secondlabel.Text == "" | secondlabel.Text == " " | haverror == true | secondlabel.Text == "-бесконечность" | secondlabel.Text == "бесконечность")
+            if (secondlabel.Text == string.Empty | secondlabel.Text == "" | secondlabel.Text == " " | haverror == true | secondlabel.Text == "-бесконечность" | secondlabel.Text == "бесконечность" | secondlabel.Text == "Не число")
             {
                 return;
             }
@@ -1167,10 +1189,10 @@ namespace Calculator
                 Getthecurrentexample();
                 if (numsarr.Count == 1)
                 {
-                    _Equals();
+                    MainEquals();
                     return;
                 }
-                _Equals();
+                MainEquals();
                 return;
             }
             
@@ -1183,7 +1205,7 @@ namespace Calculator
                         | temp == '%' | temp == 'π' | temp == 'e' | temp == 'φ' | temp == '³' | temp == '²' | temp  == '!')  // вычислять если возможно после удаления последнего элемента
                     {
                         Getthecurrentexample();
-                            _Equals();
+                            MainEquals();
                     }
                     if (mainlabel.Text == "-") { secondlabel.Text = string.Empty; return; }
                 }
