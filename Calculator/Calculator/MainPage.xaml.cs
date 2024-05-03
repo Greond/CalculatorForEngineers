@@ -21,7 +21,7 @@ namespace Calculator
         {
             try { 
             bool firstminus = false;
-                if (num.StartsWith("-")) 
+                if (num.StartsWith("-"))  // если число отриательное
                 {firstminus = true; num = num.Substring(1);}
             string result = ""; //Результат
             long left = 0; //Целая часть
@@ -80,7 +80,54 @@ namespace Calculator
             }
             catch { return "large number"; }
         }
-       
+        public string ConvertTo8(string num)
+        {
+            try { 
+            long left  =  0;// целая часть
+            long right  = 0;// после запятой часть
+            string result = string.Empty;  // куда  будем записывать результат
+            bool firstminus = false;
+            if (num.StartsWith("-"))  // если число отриательное
+            { firstminus = true; num = num.Substring(1); }
+
+            if (num.Contains(".") | num.Contains(",")) // проверяем есть ли дробная часть
+            {
+                left = Convert.ToInt64(num.Split('.',',')[0]); // присваиваем целую а затем и дробную часть
+                right = Convert.ToInt64(num.Split('.', ',')[1]);
+            }
+            else { left = Convert.ToInt64(num);} // если нету дробной части 
+            
+            while (true) 
+            {
+                result = Convert.ToString(left % 8) + result;
+                left = left / 8;
+                if (left == 0) { break; }
+            }
+            if (num.Contains(".") | num.Contains(",")) // проверяем есть ли дробная часть
+            {
+                result +=",";
+                int limit =  right.ToString().Count(); // количесвто цифр за превешением которых  добавляем 
+
+                for (int i = 0; i < 5; i++)
+                {
+                    right = right * 8;
+                    if  (right.ToString().Count() > limit) 
+                    {
+                        result += right.ToString()[0];
+                        right = Convert.ToInt64(right.ToString().Substring(1));
+                    }
+                    else
+                    {
+                        result += "0";
+                    }
+                }
+            }
+            if (firstminus) { return "-" + result; }
+            else { return result; }
+            }
+            catch { return "large number"; }
+
+        }
     }
     public partial class MainPage : ContentPage
     {
@@ -148,7 +195,7 @@ namespace Calculator
                         inv = !inv;
                         if (inv ==  true)
                         { // 14 = это кнопка с tanh
-                            for (int i = 9; i < 15; i++)
+                            for (int i = 12; i < 18; i++)
                             {
                                 Button Abutton = Grid2.Children[i] as Button;
                                 Abutton.TextTransform = TextTransform.None;
@@ -157,7 +204,7 @@ namespace Calculator
                         }
                         else
                         {
-                            for (int i = 9; i < 15; i++)
+                            for (int i = 12; i < 18; i++)
                             {
                                 Button Abutton = Grid2.Children[i] as Button;
                                 Abutton.Text = Abutton.Text.Substring(1);
@@ -221,9 +268,9 @@ namespace Calculator
                     Grid.SetColumn(rad, 2);
                     Grid.SetRow(rad, 5);
                     // rad/>
-                    addRadioButton("Bin", "systems", 4, 0);
-                    addRadioButton("Oct", "systems", 4, 1);
-                    addRadioButton("Dec", "systems", 4, 2);
+                    addRadioButton("Bin₂", "systems", 4, 0);
+                    addRadioButton("Oct₈", "systems", 4, 1);
+                    addRadioButton("Dec₁₀", "systems", 4, 2);
 
 
                        int n =0;
@@ -294,17 +341,17 @@ namespace Calculator
                             if (radioButton.IsChecked == false) { return; }
                             switch (radioButton.Content.ToString())
                             {
-                                case "Dec":
+                                case "Dec₁₀":
                                     Dec = true;
                                     Bin = false;
                                     Oct = false;
                                     break;
-                                case "Bin":
+                                case "Bin₂":
                                     Bin = true;
                                     Oct = false;
                                     Dec = false;
                                     break;
-                                case "Oct":
+                                case "Oct₈":
                                     Oct = true;
                                     Bin = false;
                                     Dec = false; 
@@ -382,7 +429,8 @@ namespace Calculator
         }
         public void Minusreverse(object sender,EventArgs e)
         {
-            if (mainlabel.Text == "" | mainlabel.Text == string.Empty) { return; }
+            if (mainlabel.Text == "" | mainlabel.Text == string.Empty) { mainlabel.Text = "-"; return; }
+            if (mainlabel.Text == "-") { mainlabel.Text = string.Empty;  return; }
             if (mainlabel.Text.StartsWith("-")) { mainlabel.Text = mainlabel.Text.Substring(1);}
             else if  (!mainlabel.Text.StartsWith("-")) {mainlabel.Text = "-" + mainlabel.Text;}
 
@@ -557,7 +605,7 @@ namespace Calculator
                 {
                     return;
                 }
-                else if (mainlabel.Text.EndsWith("÷") | mainlabel.Text.EndsWith("×") | mainlabel.Text.EndsWith("n") | mainlabel.Text.EndsWith("s") | mainlabel.Text.EndsWith("h") | mainlabel.Text.EndsWith("⅟") )
+                else if (mainlabel.Text.EndsWith("÷") | mainlabel.Text.EndsWith("×") | mainlabel.Text.EndsWith("n") | mainlabel.Text.EndsWith("s") | mainlabel.Text.EndsWith("h") | mainlabel.Text.EndsWith("⅟", StringComparison.OrdinalIgnoreCase))
                 {
                     if (btn.Text == "-")
                     {
@@ -630,6 +678,10 @@ namespace Calculator
                 Convector convector = new Convector();
                 if (Bin == true)
                 { secondlabel.Text = convector.ConvertTo2(numsarr[0].ToString()) + "₂"; }
+                else if (Oct == true)
+                {
+                    secondlabel.Text = convector.ConvertTo8(numsarr[0].ToString()) + "₈";
+                }
                 else
                 {
                     secondlabel.Text = numsarr[0].ToString();
@@ -1224,13 +1276,22 @@ namespace Calculator
 
        public void EqualsButtonClick(object sender, EventArgs e)
         {
+            string output = secondlabel.Text;
             if (secondlabel.Text == string.Empty | secondlabel.Text == "" | secondlabel.Text == " " | haverror == true | secondlabel.Text == "-бесконечность" | secondlabel.Text == "бесконечность" | secondlabel.Text == "Не число")
             {
                 return;
             }
+            if (secondlabel.Text.EndsWith("₂"))
+            {
+                //  if (secondlabel.Text.Length > 1) { output = secondlabel.Text.Substring(0, secondlabel.Text.Length - 2); }
+                return;
+            }
+            if (secondlabel.Text.EndsWith("₈"))
+            {
+                return;
+            }
 
-
-            mainlabel.Text = secondlabel.Text;
+            mainlabel.Text = output;
             secondlabel.Text = string.Empty;
 
            
