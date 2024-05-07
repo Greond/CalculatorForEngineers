@@ -39,7 +39,7 @@
     <StackLayout Background="#1c1c1c" >
         <StackLayout  Orientation="Vertical" BackgroundColor="#1c1c1c">
             <Label x:Name="mainlabel" FontSize="40" FontAttributes="Bold" Margin ="0,50,10,0"
-BackgroundColor="#1c1c1c" Text="27,49+324,2÷34,12" 
+BackgroundColor="#1c1c1c" Text="27,49+324,2÷34,12*+++-*" 
 TextColor="AntiqueWhite" 
 HorizontalTextAlignment="End" 
 VerticalTextAlignment="Center"
