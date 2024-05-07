@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Xamarin.Forms;
 
 namespace Calculator
 {
-    internal class Calculator 
+    internal class Calculator
     {
-
-        List<double> numsarr = new List<double>();
-        List<string> chararr = new List<string>();
+        private List<double> numsarr = new List<double>();
+        private List<string> chararr = new List<string>();
+        private Convector convector = new Convector(); //подключаем класс для преоброзования систем исчесления
 
         private bool haveerror = false;
-        internal bool _haveerror {get { return haveerror; } }
-         internal string MainEquals(bool Bin,bool Oct,string inputstring,bool Deg) // like a  ÷ × + -  % √ ² 
+        internal bool Haveerror { get { return haveerror; } }
+         internal string MainEquals(NumberSystems system,string inputstring,bool Deg) // like a  ÷ × + -  % √ ² 
         {
             try
             {
-                Getthecurrentexample(inputstring);
+                Getthecurrentexample(inputstring); // разделение на знаки и цыфры
                 firstcharsprocessing(Deg); // обработка доп  знаков
             }
             catch {return "Eror"; }
@@ -50,10 +51,9 @@ namespace Calculator
             if (haveerror == true) { output = "Syntax Erorr"; }
             else
             {
-                Convector convector = new Convector();
-                if (Bin == true)
+                if (system == NumberSystems.Bin)
                 { output = convector.ConvertToBin(numsarr[0].ToString()) + "₂"; }
-                else if (Oct == true)
+                else if (system == NumberSystems.Oct)
                 {
                    output = convector.ConvertToOct(numsarr[0].ToString()) + "₈";
                 }
@@ -253,8 +253,12 @@ namespace Calculator
             {
                 try
                 {
-                    bool E_nums = nums[i].Contains('E'); // проверка на Е числа(степени)
-                    if (E_nums)
+                 /*   if (systems != NumberSystems.Dec & nums[i] == "π" & nums[i] == "e" & nums[i] == "φ")
+                    {
+                        numsarr.Add(convector.ConvertToDec(nums[i], systems));
+                    } 
+                 */
+                    if (nums[i].Contains('E')) // проверка на Е числа(степени))
                     {
                         string tempstr = nums[i] + inputString[inputString.IndexOf('E') + 1] + nums[i + 1];
                         double temp = double.Parse(tempstr);
@@ -280,9 +284,7 @@ namespace Calculator
                     else
                     {
                         double temp = double.Parse(nums[i]);
-
                         numsarr.Add(temp);
-                        Console.WriteLine(nums[i]);
                     }
                 }
                 catch 
@@ -618,7 +620,7 @@ namespace Calculator
             }
 
         }
-        internal void ClearData()
+        protected internal void ClearData()
         {
             numsarr.Clear();
             chararr.Clear();

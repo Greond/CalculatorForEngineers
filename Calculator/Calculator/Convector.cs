@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -118,7 +119,39 @@ namespace Calculator
                 else { return result; }
             }
             catch { return "Convert Eror"; }
-
         }
+        internal double ConvertToDec(string num,NumberSystems System)
+        {
+            string left;// целая часть
+            string right = string.Empty;// после запятой часть
+            double result = 0;  // куда  будем записывать результат
+            bool firstminus = false;
+            if (num.StartsWith("-"))  // если число отриательное
+            { firstminus = true; num = num.Substring(1); }
+
+            if (num.Contains(".") | num.Contains(",")) // проверяем есть ли дробная часть
+            {
+                left = num.Split('.', ',')[0]; // присваиваем целую а затем и дробную часть
+                right = num.Split('.', ',')[1];
+            }
+            else { left = num; } // если нету дробной части 
+
+            left = new string(left.ToCharArray().Reverse().ToArray()); //Реверсирование строки
+            for (int i = 0; i<left.Length; i++)
+            {
+                result += left[i] * Math.Pow(Convert.ToInt32(System), i);
+            }
+            if (right != string.Empty)
+            {
+                for (int i = 0;i<right.Length;i++)
+                {
+                    result += left[i] * Math.Pow(Convert.ToInt32(System), (i + 1) * -1); 
+                }
+            }
+            if (!firstminus)
+            { return result; }
+            else {return result *-1;}
+        }
+
     }
 }

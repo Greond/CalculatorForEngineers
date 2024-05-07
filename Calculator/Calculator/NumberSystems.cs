@@ -1,6 +1,6 @@
 ﻿namespace Calculator
 {
-        enum NumberSystems
+        internal enum NumberSystems
         {
         Dec = 10,
         Oct = 8,

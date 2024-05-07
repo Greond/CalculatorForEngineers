@@ -21,10 +21,10 @@ namespace Calculator
         {
             InitializeComponent();
         }
-        Calculator calculator = new Calculator();
-        readonly string[] enginerschars = { "log", "ln","x!", "x³", "sin", "cos", "tan","sinh","cosh","tanh" }; //"sin", "cos", "x³","tan", "log", "ln", "!" 
-        readonly string[] enginersnums = { "e", "φ"};
-        readonly char[] CanEqualsChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '%', 'π', 'e', 'φ', '³', '²', '!' };
+        private Calculator calculator = new Calculator();
+        private readonly string[] enginerschars = { "log", "ln","x!", "x³", "sin", "cos", "tan","sinh","cosh","tanh" }; //"sin", "cos", "x³","tan", "log", "ln", "!" 
+        private readonly string[] enginersnums = { "e", "φ"};
+        private readonly char[] CanEqualsChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '%', 'π', 'e', 'φ', '³', '²', '!' };
 
         private bool Dec = true;
         private bool Oct = false;
@@ -47,10 +47,11 @@ namespace Calculator
                 if (CanEqualsChars[i] == temp)
                 {
                     Main();
+                    break;
                 }
             }
         }
-        public void Minusreverse(object sender,EventArgs e)
+        private void Minusreverse(object sender,EventArgs e)
         {
             if (mainlabel.Text == "" | mainlabel.Text == string.Empty) { mainlabel.Text = "-"; return; }
             if (mainlabel.Text == "-") { mainlabel.Text = string.Empty;  return; }
@@ -59,7 +60,7 @@ namespace Calculator
 
             CanEquals();
         }
-         public void numsbuttonclick(object sender, EventArgs e)
+        private void numsbuttonclick(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
             
@@ -110,7 +111,7 @@ namespace Calculator
             mainlabel.Text += btn.Text;
             Main();
          }
-        public void charbuttonclick(object sender, EventArgs e)  //  доделать чтобы знак ⅟ₓ можно было использовать после корня
+        private void charbuttonclick(object sender, EventArgs e)  //  доделать чтобы знак ⅟ₓ можно было использовать после корня
         {
             Button btn = (Button)sender;
             if (btn.Text == "x!")// куб
@@ -249,8 +250,10 @@ namespace Calculator
          
         private void Main() // like a  ÷ × + -  % √ ² 
         {
-            secondlabel.Text = calculator.MainEquals(Bin,Oct,mainlabel.Text,Deg);
-            
+            NumberSystems system = NumberSystems.Dec;
+            if (Bin == true) {system = NumberSystems.Bin;}
+            else if (Oct == true) { system = NumberSystems.Oct; }
+            secondlabel.Text = calculator.MainEquals(system,mainlabel.Text,Deg);
         }
         private void ClearAll(object sender, EventArgs e)
         {
@@ -258,10 +261,10 @@ namespace Calculator
             mainlabel.Text = string.Empty;
             secondlabel.Text = string.Empty;
         }
-       public void EqualsButtonClick(object sender, EventArgs e)
-        {
+        private void EqualsButtonClick(object sender, EventArgs e)
+       {
             string output = secondlabel.Text;
-            if (output == string.Empty | output == "" | output == " " | calculator._haveerror == true| output == "Eror"
+            if (output == string.Empty | output == "" | output == " " | calculator.Haveerror == true| output == "Eror"
                 | output == "-бесконечность" | output == "бесконечность" | output == "Не число" | output == "Syntax Erorr")
             {
                 return;
@@ -278,8 +281,8 @@ namespace Calculator
             mainlabel.Text = output;
             secondlabel.Text = string.Empty;
             calculator.ClearData();
-        }
-        private void  BackSpaceButtonClick(object sender, EventArgs e)
+       }
+        private void BackSpaceButtonClick(object sender, EventArgs e)
         {  
             string inputlabel = mainlabel.Text;
             int lastindex = mainlabel.Text.Length-1;
