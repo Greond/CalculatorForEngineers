@@ -7,17 +7,17 @@ namespace Calculator
 {
     public partial class MainPage 
     {
-        private double _oldwidth, _oldhight;
-        protected override void OnSizeAllocated(double width, double height)
+        private double _oldwidth, _oldhight; // переменные для хранения текущего размера страницы
+        protected override void OnSizeAllocated(double width, double height) // метод вызываеться при изменение ширины и высоты страницы
         {
             base.OnSizeAllocated(width, height);
-            if (width != _oldwidth || height != _oldhight)
+            if (width != _oldwidth || height != _oldhight)  // проверяем действително ли размер изменился 
             {
                 _oldwidth = width;
                 _oldhight = height;
                 if (width > height)
                 { // landshaft
-                    mainlabel.Margin = new Thickness(0, 10, 10, 0);
+                    mainlabel.Margin = new Thickness(0, 10, 10, 0); // здесь изменяем размеры уже существующих элементов
                     secondlabel.Margin = new Thickness(0, 0, 10, 0);
                     GridForGrids.Margin = new Thickness(0, 0, 0, 0);
                     GridForGrids.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) });
@@ -32,10 +32,9 @@ namespace Calculator
                     mainlabel.FontSize = 30;
                     secondlabel.FontSize = 20;
 
-                    Grid Grid2 = new Grid();
+                    Grid Grid2 = new Grid(); // создаём новый Grid для размещения новых кнопок
 
                     GridForGrids.Children.Add(Grid2);
-                    // GridForGrids.ColumnDefinitions.Contains(new ColumnDefinition { Width = new GridLength(7, GridUnitType.Star) });
                     GridForGrids.ColumnDefinitions[0].Width = new GridLength(3, GridUnitType.Star);
                     Grid.SetColumn(Grid2, 0);
                     Grid2.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });

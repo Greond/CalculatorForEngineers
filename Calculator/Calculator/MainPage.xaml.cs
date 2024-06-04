@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 namespace Calculator
-{
+{//test
     public partial class MainPage : ContentPage
     {
         public MainPage()
@@ -66,7 +66,7 @@ namespace Calculator
             
             if (mainlabel.Text.EndsWith("%") | mainlabel.Text.EndsWith("²")|mainlabel.Text.EndsWith("³") | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ") | mainlabel.Text.EndsWith("!"))
             {
-                return ;
+                return;
                 
             }
             if  (btn.Text == "π")
@@ -188,6 +188,8 @@ namespace Calculator
 
             if  (btn.Text == "%")
             {
+                if (mainlabel.Text == string.Empty | mainlabel.Text == "")
+                { return; }
                 char temp = mainlabel.Text[mainlabel.Text.Length - 1];
                 if (temp == '0' | temp == '1' | temp == '2' | temp == '3' | temp == '4' | temp == '5' | temp == '6' | temp == '7' | temp == '8' | temp == '9'
                     | mainlabel.Text.EndsWith("π") | mainlabel.Text.EndsWith("e") | mainlabel.Text.EndsWith("φ") |  temp == '²' | temp == '³'|temp == '!')
@@ -226,6 +228,7 @@ namespace Calculator
                 {
 
                     string inputString = mainlabel.Text;
+                    if (inputString.EndsWith("!")) { return; }
                     char[] delimiterChars = { ' ', '÷', '+', '-', '×', '%', '\t', '√', '²', '³', '⅟','s','i','n','c','o','t','a','n','!','l','o','n','g','A' }; 
                     string[] nums = inputString.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
                     bool containsdot = nums[nums.Length - 1].Contains(","); 
@@ -265,7 +268,7 @@ namespace Calculator
        {
             string output = secondlabel.Text;
             if (output == string.Empty | output == "" | output == " " | calculator.Haveerror == true| output == "Eror"
-                | output == "-бесконечность" | output == "бесконечность" | output == "Не число" | output == "Syntax Erorr")
+                | output == "-бесконечность" | output == "бесконечность" | output == "Не число" | output == "Syntax Erorr" | output == "не число") 
             {
                 return;
             }
